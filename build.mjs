@@ -109,9 +109,14 @@ function header(current) {
   ).join('')
   return `<header class="bar"><div class="wrap bar-in">
   <a class="brand" href="/"><img src="/logo.png" alt="" width="26" height="26">${NAME}</a>
+  ${MENU_BUTTON}
   <nav class="mono" aria-label="Main">${links}</nav>
 </div></header>`
 }
+
+// On phones the links fold behind one button; it toggles the nearest header or
+// front door. Works without site.js, so every page gets it.
+const MENU_BUTTON = `<button class="menu-btn mono" type="button" aria-expanded="false" onclick="var o=this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>`
 
 const footer = () => `<footer class="foot"><div class="wrap foot-in">
   <div><a class="brand" href="/"><img src="/logo.png" alt="" width="22" height="22">${NAME}</a><p>${esc(TAGLINE)}</p></div>
@@ -155,17 +160,16 @@ const DOORS = `<section class="doors reveal" aria-label="Who Roshera is for">
 <a class="door-card" href="/ai-labs"><span class="mono kicker">For AI labs</span><b>A geometry environment with verifiable rewards.</b><em>Every action returns a machine-checkable certificate. Evals graded by the kernel, not by a judge model; refusals you can score for honesty.</em><span class="go-link">Evals and environments →</span></a>
 </section>`
 
+// Three builds, each a real screen recording with captions burned in.
 const CLIPS = [
-  ['import-step', 'Import a STEP file', 'Pick the file; the kernel checks the solid is sound before anything else.'],
-  ['drawing-appears', 'Ask for the drawing', 'The agent reads the part, asks what it must not guess, and the sheet appears.'],
-  ['zoom-sheet', 'Read it closely', 'Hole table, fits from ISO 286, datums: every value re-measured on the solid.'],
-  ['edit-on-sheet', 'Edit on the sheet', 'Move a dimension, move a view, set a tolerance; each edit is one undoable step.'],
-  ['wing-rib-build', 'A wing rib from its spec', 'NACA 2412, 300 mm chord: the agent generates the section, builds and draws it.'],
+  ['step-to-drawing', 'STEP file to production drawing', '1:48', 'Import, certify, ask what it must not guess, draw with fits; the kernel catches wrong tolerance frames before release.'],
+  ['wing-rib', 'A wing rib from its specification', '1:12', 'NACA 2412 built from its designation, drawn with the profile stated by ordinates measured from the solid.'],
+  ['dn50-flange', 'A flange from the standard', '1:18', 'DN50 PN16 to EN 1092-1. Where the table ends, the agent stops and asks instead of guessing.'],
 ]
 const PLAYER = `<section class="sec watch reveal" id="watch" data-player>
-<div><div class="mono kicker">See it work</div><h3>Real recordings, not renders.</h3><p>Screen recordings of Roshera at work this week, sped up. Nothing staged: what the agent said and what the kernel checked is what you see.</p>
-<ol class="chapters">${CLIPS.map(([id, t, d], i) => `<li><button type="button" data-src="/video/${id}.mp4" data-poster="/video/${id}.jpg" aria-selected="${i === 0}"><span class="mono">${String(i + 1).padStart(2, '0')}</span><b>${t}</b><em>${d}</em></button></li>`).join('')}</ol></div>
-<figure class="screen"><div class="chrome"><i></i><i></i><i></i><span class="mono">Roshera</span></div><video muted playsinline preload="metadata" aria-label="Recording of Roshera"></video><div class="progress"><i></i></div></figure>
+<div class="watch-text"><div class="mono kicker">See it work</div><h3>Three builds, recorded as they happened.</h3><p>Real screen recordings, sped up where the agent works. Nothing staged: what the agent said and what the kernel checked is what you see.</p></div>
+<figure class="screen"><div class="chrome"><i></i><i></i><i></i><span class="mono">Roshera</span></div><video muted playsinline controls preload="metadata" aria-label="Recording of Roshera"></video><div class="progress"><i></i></div></figure>
+<ol class="chapters">${CLIPS.map(([id, t, len, d], i) => `<li><button type="button" data-src="/video/${id}.mp4" data-poster="/video/${id}.jpg" aria-selected="${i === 0}"><span class="mono">${String(i + 1).padStart(2, '0')}</span><b>${t} <small class="mono">${len}</small></b><em>${d}</em></button></li>`).join('')}</ol>
 </section>`
 
 const LOOP = `<section class="sec loop reveal" id="loop" data-loop>
@@ -237,6 +241,7 @@ function home() {
 <div class="door">
   <div id="hero" aria-hidden="true"></div>
   <a class="brand door-brand" href="/"><img src="/logo.png" alt="" width="30" height="30">${NAME}</a>
+  ${MENU_BUTTON}
   <nav class="links mono" aria-label="Main">${NAV.map(([h, l]) => `<a href="${h}">${l}</a>`).join('')}</nav>
   <div class="spec mono" aria-label="What Roshera checks">
     <div><i></i>every dimension re-measured<b>✓</b></div>
